@@ -6,12 +6,12 @@ class StaticArray
 
   # O(1)
   def [](index)
-    self[index]
+    @store[index]
   end
 
   # O(1)
   def []=(index, value)
-    self[index] = value
+    @store[index] = value
   end
 
   protected
