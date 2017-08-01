@@ -17,22 +17,21 @@ class DynamicArray
 
   # O(1)
   def []=(index, value)
-    self.resize! if index > capacity
     @store[index] = value
   end
 
   # O(1)
   def pop
-
-    @store[length-1] = nil
+    @store[@length-1] = nil
+    @length -= 1
   end
 
   # O(1) ammortized; O(n) worst case. Variable because of the possible
   # resize.
   def push(val)
-    # if
-    @store[length-1] = val
-    length += 1
+    resize! if @length == @capacity
+    @store[@length] = val
+    @length += 1
   end
 
   # O(n): has to shift over all the elements.
@@ -48,7 +47,7 @@ class DynamicArray
   attr_writer :length
 
   def check_index(index)
-    # raise "index out of bounds" if index >= length ||
+    raise "index out of bounds" unless index >= 0 && index < length
   end
 
   # O(n): has to copy over all the elements to the new store.
@@ -67,6 +66,5 @@ class DynamicArray
 end
 
 x = DynamicArray.new
-p x
-x.resize!
-p x
+x.pop
+# p x
