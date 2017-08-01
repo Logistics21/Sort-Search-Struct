@@ -84,14 +84,7 @@ class DynamicArray
       i += 1
     end
 
-    @capacity = @capacity*2
+    @capacity *= 2
     @store = new_store
   end
 end
-
-x = DynamicArray.new
-x.push("b")
-x.push("c")
-x.push("d")
-x[12] = "z"
-p x
