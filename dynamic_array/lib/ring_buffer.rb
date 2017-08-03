@@ -1,72 +1,78 @@
 require_relative "static_array"
+require 'byebug'
 
 class RingBuffer
   attr_reader :length
 
   def initialize
-    @store, @length, @capacity, @start_idx = StaticArray.new(8), 0, 8, 0
+    @store, @capacity, @start_idx, @length = StaticArray.new(8), 8, 0, 0
   end
 
   # O(1)
   def [](index)
     check_index(index)
-    @store[index]
-    # index < 0 ? @store[@length+index] : @store[index]
+    store[(start_idx + index) % capacity]
   end
 
   # O(1)
   def []=(index, val)
-    # check_index(index)
-    @store[index] = val
+    check_index(index)
+    store[(start_idx + index) % capacity] = val
   end
 
   # O(1)
   def pop
-    check_index(@length-1)
-    @store[@length-1] = nil
+    raise "index out of bounds" if length == 0
+
+    val, self[length - 1] = self[length - 1], nil
     @length -= 1
+    val
   end
 
   # O(1) ammortized
   def push(val)
-    resize! if @length == @capacity
-    @store[@length] = val
+    resize! if length == capacity
     @length += 1
+    self[length-1] = val
   end
 
   # O(1)
   def shift
-    check_index(@length-1)
+    raise "index out of bounds" if length == 0
+    val, self[0] = self[0], nil
+    @start_idx = (start_idx + 1) % capacity
+    @length -= 1
+    val
   end
 
   # O(1) ammortized
   def unshift(val)
+    resize! if length == capacity
+
+    @start_idx = (start_idx - 1) % capacity
+    @length += 1
+    self[0] = val
   end
 
-  # protected
+  protected
   attr_accessor :capacity, :start_idx, :store
   attr_writer :length
 
   def check_index(index)
-    raise "index out of bounds" unless index >= 0 && index < @length
+    raise "index out of bounds" unless index >= 0 && index < length
   end
 
   def resize!
-    new_store = StaticArray.new(@capacity*2)
+    new_store = StaticArray.new(capacity*2)
+
     i = 0
-    while i < capacity
-      new_store[i] = @store[i]
+    while i < length
+      new_store[i] = self[i]
       i += 1
     end
 
     @capacity *= 2
+    @start_idx = 0
     @store = new_store
   end
 end
-
-# x = RingBuffer.new
-# x[0]= "a"
-# x[1]= "b"
-# x[2]= "c"
-# x.length = 3
-# p x[2]

@@ -35,7 +35,7 @@ describe RingBuffer do
     expect(arr.length).to eq(0)
   end
 
-  it "correctly handles a mix of pushes/pops and shifts/unshifts" do
+  it "returns the removed value after a mix of pushes/pops and shifts/unshifts" do
     arr = RingBuffer.new
 
     4.times do |i|
