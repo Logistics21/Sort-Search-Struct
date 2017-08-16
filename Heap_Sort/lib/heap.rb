@@ -1,8 +1,7 @@
-# require 'byebug'
-
 class BinaryMinHeap
   def initialize(&prc)
     @store = []
+    self.prc = prc ||= Proc.new { |x, y| x <=> y }
   end
 
   def count
@@ -10,6 +9,7 @@ class BinaryMinHeap
   end
 
   def extract
+    raise "Heap is empty" if count == 0
     @store[0], @store[-1] = @store[-1], @store[0]
     last = @store.pop
     BinaryMinHeap.heapify_down(@store, 0)
@@ -17,12 +17,13 @@ class BinaryMinHeap
   end
 
   def peek
+    raise "Heap is empty" if length == 0
     @store[0]
   end
 
   def push(val)
     @store.push(val)
-    BinaryMinHeap.heapify_up(@store, @store.length-1)
+    BinaryMinHeap.heapify_up(@store, @store.length-1, &prc)
   end
 
   protected
@@ -37,58 +38,49 @@ class BinaryMinHeap
 
   def self.parent_index(child_index)
     raise "root has no parent" if child_index == 0
+
     (child_index - 1) / 2
   end
 
   def self.heapify_down(array, parent_idx, len = array.length, &prc)
     prc ||= Proc.new { |x, y| x <=> y }
 
-    # debugger
-    kids = self.child_indices(len, parent_idx)
-    until kids.empty?
-      if kids.length > 1
-        k1, k2 = array[kids[0]], array[kids[1]]
-        i = prc.call(k1, k2) < 0 ? kids[0] : kids[1]
-      else
-        i = kids[0]
-      end
+    k1, k2 = child_indices(len, parent_idx)
 
-      mom = array[parent_idx]
+    kids = []
+    kids.push(array[k1]) if k1
+    kids.push(array[k2]) if k2
 
-      if prc.call(mom, array[i]) >= 0
-        array[parent_idx], array[i] =
-        array[i], array[parent_idx]
-        parent_idx = i
-      else
-        break
-      end
+    mom = array[parent_idx]
 
-      kids = self.child_indices(len, parent_idx)
+    if kids.all? { |kid| prc.call(mom, kid) <= 0 }
+      return array
     end
 
-    array
+    if kids.length > 1
+      i = prc.call(kids[0], kids[1]) <= 0 ? k1 : k2
+    else
+      i = k1
+    end
+
+    array[parent_idx], array[i] = array[i], array[parent_idx]
+    heapify_down(array, i, len, &prc)
   end
 
   def self.heapify_up(array, child_idx, len = array.length, &prc)
     prc ||= Proc.new { |x,y| x <=> y }
 
-    until child_idx < 1
-      mom_spot = self.parent_index(child_idx)
-      mom = array[mom_spot]
-      kid = array[child_idx]
+    return array if child_idx == 0
 
-      if prc.call(mom, kid) > 0
-        array[mom_spot], array[child_idx] =
-        array[child_idx], array[mom_spot]
-        child_idx = mom_spot
-      else
-        break
-      end
+    mom_spot = self.parent_index(child_idx)
+    mom = array[mom_spot]
+    kid = array[child_idx]
+
+    if prc.call(mom, kid) >= 0
+      array[mom_spot], array[child_idx] = array[child_idx], array[mom_spot]
+      heapify_up(array, mom_spot, &prc)
+    else
+      return array
     end
-
-    array
   end
 end
-
-p BinaryMinHeap.heapify_down([1, 2, 3], 0)
-# p BinaryMinHeap.heapify_down([1, 5, 4, 3], 0)
