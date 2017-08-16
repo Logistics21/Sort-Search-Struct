@@ -1,4 +1,4 @@
-require 'byebug'
+# require 'byebug'
 
 class BinaryMinHeap
   def initialize(&prc)
@@ -10,14 +10,19 @@ class BinaryMinHeap
   end
 
   def extract
+    @store[0], @store[-1] = @store[-1], @store[0]
+    last = @store.pop
+    BinaryMinHeap.heapify_down(@store, 0)
+    last
   end
 
   def peek
+    @store[0]
   end
 
   def push(val)
     @store.push(val)
-    # heapify_up(@store, @store.length-1)
+    BinaryMinHeap.heapify_up(@store, @store.length-1)
   end
 
   protected
@@ -31,25 +36,29 @@ class BinaryMinHeap
   end
 
   def self.parent_index(child_index)
-    # raise "root has no parent" if child_index == 0
+    raise "root has no parent" if child_index == 0
     (child_index - 1) / 2
   end
 
   def self.heapify_down(array, parent_idx, len = array.length, &prc)
-    prc = Proc.new { |el1, el2| -1 * (el1 <=> el2) }
+    prc ||= Proc.new { |x, y| x <=> y }
 
-    debugger
+    # debugger
     kids = self.child_indices(len, parent_idx)
     until kids.empty?
+      if kids.length > 1
+        k1, k2 = array[kids[0]], array[kids[1]]
+        i = prc.call(k1, k2) < 0 ? kids[0] : kids[1]
+      else
+        i = kids[0]
+      end
+
       mom = array[parent_idx]
-      if prc.call(mom, array[kids[0]]) > 0
-        array[parent_idx], array[kids[0]] =
-        array[kids[0]], array[parent_idx]
-        parent_idx = kids[0]
-      elsif kids.length > 1 && prc.call(mom, array[kids[1]]) > 0
-        array[parent_idx], array[kids[1]] =
-        array[kids[1]], array[parent_idx]
-        parent_idx = kids[1]
+
+      if prc.call(mom, array[i]) >= 0
+        array[parent_idx], array[i] =
+        array[i], array[parent_idx]
+        parent_idx = i
       else
         break
       end
@@ -82,4 +91,4 @@ class BinaryMinHeap
 end
 
 p BinaryMinHeap.heapify_down([1, 2, 3], 0)
-p BinaryMinHeap.heapify_down([1, 5, 4, 3], 0)
+# p BinaryMinHeap.heapify_down([1, 5, 4, 3], 0)
