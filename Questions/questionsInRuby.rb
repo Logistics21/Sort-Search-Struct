@@ -40,3 +40,29 @@ def max_sub(arr)
 end
 
 p max_sub(x)
+
+class ListNode
+    attr_accessor :val, :next
+    def initialize(val)
+        @val = val
+        @next = nil
+    end
+end
+
+def merge_two_lists(l1, l2)
+ plchldr = curr = ListNode.new(0)
+    while l1 && l2
+        if l1.val < l2.val
+            curr.next = l1
+            l1 = l1.next
+        else
+            curr.next = l2
+            l2 = l2.next
+        end
+
+        curr = curr.next
+        curr.next = l1 || l2
+    end
+
+    return plchldr.next
+end
