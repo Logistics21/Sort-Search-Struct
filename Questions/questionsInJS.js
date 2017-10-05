@@ -203,4 +203,14 @@ function fib1(num) {
 }
 
 
+function fib2(num, cache={0:0, 1:1}) {
+  if (num < 2) return num;
+
+  if (cache[num] !== undefined) return cache[num];
+
+  cache[num] = fib2(num-1, cache) + fib2(num-2, cache);
+  return cache[num];
+}
+
+
 fib4(42);
