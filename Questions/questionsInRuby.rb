@@ -88,3 +88,19 @@ def merge_two_lists2(l1, l2)
 
   plchldr
 end
+
+def has_cycle?(node)
+  return false if node.nil?
+
+  fast = node.next
+  slow = node
+
+  while !fast.next.nil? && slow
+    return true if fast == slow
+
+    fast = fast.next.next
+    slow = slow.next
+  end
+
+  return false
+end
