@@ -195,3 +195,12 @@ BinarySearchTree.prototype.getNodeByKey = function(key) {
 // } else {
 //     console.log("Inorder successor does not exist");
 // }
+
+function fib1(num) {
+  if (num === 0) return 0;
+  if (num === 1) return 1;
+  return fib1(num-1) + fib1(num-2);
+}
+
+
+fib4(42);
