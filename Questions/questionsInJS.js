@@ -224,4 +224,18 @@ function fib3(num) {
 }
 
 
+function fib4(num) {
+  if (num < 2) return num;
+  let n1 = 1;
+  let n2 = 0;
+
+  for (let i = 2; i < num; i++) {
+    n0 = n1+n2
+    n2 = n1
+    n1 = n0
+  }
+
+  return n1 + n2;
+}
+
 fib4(42);
