@@ -18,3 +18,27 @@ var firstUniqChar = function(s) {
 };
 
 console.log(firstUniqChar("abacbcla"));
+
+function ListNode(val) {
+    this.val = val;
+    this.next = null;
+ }
+
+var x = new ListNode(2);
+x.next = new ListNode(4);
+x.next.next = new ListNode(3);
+x.next.next.next = new ListNode(1);
+
+var reverseList = function(head) {
+    let prev = null, next = null;
+    while (head) {
+        next = head.next
+        head.next = prev;
+        prev = head;
+        head = next;
+    }
+
+    return prev;
+};
+
+console.log(reverseList(x))
