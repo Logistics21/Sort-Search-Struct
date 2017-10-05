@@ -66,3 +66,25 @@ def merge_two_lists(l1, l2)
 
     return plchldr.next
 end
+
+def merge_two_lists2(l1, l2)
+  plchldr = curr = ListNode.new(0)
+  plchldr.next = l1
+  while l1 && l2
+    if l1.val < l2.val
+      # curr.next = l1
+      l1 = l1.next
+    else
+      nxt = curr.next
+      curr.next = l2
+      tmp = l2.next
+      l2.next = nxt
+      l2 = tmp
+    end
+
+    curr = curr.next
+    curr.next = l1 || l2
+  end
+
+  plchldr
+end
