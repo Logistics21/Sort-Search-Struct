@@ -17,7 +17,7 @@ var firstUniqChar = function(s) {
     return -1;
 };
 
-console.log(firstUniqChar("abacbcla"));
+// console.log(firstUniqChar("abacbcla"));
 
 function ListNode(val) {
     this.val = val;
@@ -40,5 +40,13 @@ var reverseList = function(head) {
 
     return prev;
 };
+var reverseListRec = function(head) {
+    if (head === null || head.next === null) return head;
+    let new_head = reverseListRec(head.next);
+    head.next.next = head;
+    head.next = null;
+    return new_head;
+};
 
-console.log(reverseList(x))
+// console.log(reverseList(x))
+// console.log(reverseListRec(x))
