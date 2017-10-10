@@ -212,6 +212,7 @@ function fib2(num, cache={0:0, 1:1}) {
   return cache[num];
 }
 
+
 function fib3(num) {
   if (num === 0) return num;
   let cache = {0: 0, 1: 1};
